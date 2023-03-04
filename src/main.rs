@@ -8,19 +8,26 @@ fn main() {
         .build()
         .expect("Could not create ggez context!");
 
-    let state = State {};
+    let state = State {
+      deltaTime: std::time::Duration::new(0, 0),
+    };
 
     event::run(ctx, event_loop, state);
 }
 
-struct State {}
+struct State {
+  // The time each frame has taken.
+  deltaTime: std::time::Duration,
+}
 
 impl EventHandler for State {
     fn update(&mut self, ctx: &mut Context) -> GameResult  {
+        self.deltaTime = ctx.time.delta();
         Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
+        println!("Hello ggez! dt = {}ns", self.deltaTime.as_nanos());
         Ok(())
     }
 }
