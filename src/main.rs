@@ -1,33 +1,28 @@
-use ggez::event::{self, EventHandler};
-use ggez::{graphics, conf};
-use ggez::{Context, ContextBuilder, GameResult};
+use bevy::prelude::*;
 
 fn main() {
-    let (ctx, event_loop) = ContextBuilder::new("rusty_hangman", "guppy")
-        .default_conf(conf::Conf::new())
-        .build()
-        .expect("Could not create ggez context!");
-
-    let state = State {
-      deltaTime: std::time::Duration::new(0, 0),
-    };
-
-    event::run(ctx, event_loop, state);
+    App::new()
+        .insert_resource(ClearColor(Color::rgb(0.9, 0.9, 0.9)))
+        .insert_resource(WindowDescriptor {
+            title: "Hello Bevy".to_string(),
+            width: 500.0,
+            height: 500.0,
+            ..Default::default()
+        })
+        .add_plugins(DefaultPlugins)
+        .add_startup_system(setup_system)
+        .run();
 }
 
-struct State {
-  // The time each frame has taken.
-  deltaTime: std::time::Duration,
-}
+fn setup_system(mut commands: Commands) {
+    commands.spawn_bundle(OrthographicCameraBundle::new_2d());
 
-impl EventHandler for State {
-    fn update(&mut self, ctx: &mut Context) -> GameResult  {
-        self.deltaTime = ctx.time.delta();
-        Ok(())
-    }
-
-    fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        println!("Hello ggez! dt = {}ns", self.deltaTime.as_nanos());
-        Ok(())
-    }
+    commands.spawn_bundle(SpriteBundle {
+        sprite: Sprite {
+            color: Color::rgb(0.25, 0.25, 0.75),
+            custom_size: Some(Vec2::new(100.0, 100.0)),
+            ..Default::default()
+        },
+        ..Default::default()
+    });
 }
